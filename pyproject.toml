@@ -1,0 +1,278 @@
+[project]
+name = "network-security-platform"
+version = "0.1.0"
+description = "网络安全工具平台 - 集成端口扫描、PING监控、TCP通信的多端网络安全解决方案"
+authors = [
+    {name = "Ignorant-lu", email = "ignorant-lu@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+
+# 项目关键词和分类
+keywords = ["网络安全", "端口扫描", "PING监控", "TCP通信", "网络工具"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Networking",
+    "Topic :: Security",
+]
+
+# 核心依赖 - 项目运行的最小依赖集
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    "asyncpg>=0.29.0", # PostgreSQL异步驱动
+    "redis>=5.0.0",
+    "celery>=5.3.0",
+    "httpx>=0.25.0",
+    "websockets>=12.0",
+    "structlog>=23.2.0",
+    "click>=8.1.0",
+    "rich>=13.7.0",
+    "python-multipart>=0.0.6",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "aiofiles>=23.2.1",
+    "prometheus-client>=0.19.0",
+    "slowapi>=0.1.9",
+    "pydantic-settings>=2.9.1",
+    "ping3>=4.0.8",
+    "psutil>=6.1.1",
+]
+
+# 可选依赖组 - 按功能模块分组
+[project.optional-dependencies]
+# 开发环境依赖
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "httpx>=0.25.0",  # 用于API测试
+    "factory-boy>=3.3.0",  # 测试数据工厂
+]
+
+# 代码质量工具
+lint = [
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "bandit>=1.7.5",
+    "safety>=2.3.0",
+    "pre-commit>=3.6.0",
+]
+
+# 文档生成
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.4.0",
+    "mkdocs-mermaid2-plugin>=1.1.0",
+    "mkdocs-swagger-ui-tag>=0.6.0",
+]
+
+# 桌面客户端依赖
+desktop = [
+    "PySide6>=6.6.0",
+    "PySide6-Addons>=6.6.0",
+]
+
+# 网络工具专用依赖
+network = [
+    "ping3>=4.0.0",
+    "python-nmap>=0.7.1",
+    "scapy>=2.5.0",
+    "netifaces>=0.11.0",
+    "dnspython>=2.4.0",
+]
+
+# 监控和可观测性
+monitoring = [
+    "prometheus-client>=0.19.0",
+    "opentelemetry-api>=1.21.0",
+    "opentelemetry-sdk>=1.21.0",
+    "opentelemetry-instrumentation-fastapi>=0.42b0",
+]
+
+# 生产环境依赖
+production = [
+    "gunicorn>=21.2.0",
+    "uvloop>=0.19.0",  # 高性能事件循环
+    "orjson>=3.9.0",   # 高性能JSON序列化
+]
+
+# 完整安装 - 包含所有可选依赖
+all = [
+    "network-security-platform[dev,lint,docs,desktop,network,monitoring,production]"
+]
+
+# 项目URL链接
+[project.urls]
+Homepage = "https://github.com/ignorant-lu/network-security-platform"
+Repository = "https://github.com/ignorant-lu/network-security-platform.git"
+Documentation = "https://ignorant-lu.github.io/network-security-platform"
+Issues = "https://github.com/ignorant-lu/network-security-platform/issues"
+Changelog = "https://github.com/ignorant-lu/network-security-platform/blob/main/CHANGELOG.md"
+
+# 命令行入口点
+[project.scripts]
+network-scanner = "cli_tools.network_scanner:main"
+ping-monitor = "cli_tools.ping_monitor:main"
+tcp-tools = "cli_tools.tcp_tools:main"
+
+# 构建系统配置
+[build-system]
+requires = ["hatchling>=1.18.0"]
+build-backend = "hatchling.build"
+
+# Hatch构建配置
+[tool.hatch.build.targets.wheel]
+packages = ["backend", "cli_tools", "desktop_client"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/backend",
+    "/cli_tools", 
+    "/desktop_client",
+    "/tests",
+    "/docs",
+    "/README.md",
+    "/LICENSE",
+]
+exclude = [
+    "/.git",
+    "/.github",
+    "/.vscode",
+    "/frontend",
+    "/deployment",
+    "/logs",
+    "/data",
+    "*.pyc",
+    "__pycache__",
+]
+
+# UV工具配置
+[tool.uv]
+# 开发环境配置
+dev-dependencies = [
+    "network-security-platform[dev,lint,docs]"
+]
+
+# Python下载配置
+python-downloads = "automatic"
+
+# 缓存配置
+cache-keys = ["requirements"]
+
+# Ruff代码格式化和检查配置
+[tool.ruff]
+# 基础配置在.ruff.toml中定义
+extend = ".ruff.toml"
+
+# MyPy类型检查配置
+[tool.mypy]
+# 基础配置在mypy.ini中定义
+warn_unused_configs = true
+
+# Pytest测试配置
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config", 
+    "--cov=backend",
+    "--cov=cli_tools",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml",
+    "--cov-fail-under=90",
+]
+testpaths = [
+    "tests",
+    "backend/tests",
+    "cli_tools/tests",
+    "desktop_client/tests",
+]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: 标记运行较慢的测试",
+    "integration: 标记集成测试",
+    "unit: 标记单元测试",
+    "network: 标记需要网络访问的测试",
+    "privileged: 标记需要特殊权限的测试",
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+asyncio_default_fixture_loop_scope = "function"
+
+# Coverage.py配置
+[tool.coverage.run]
+source = ["backend", "cli_tools", "desktop_client"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/migrations/*",
+    "*/alembic/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Bandit安全检查配置
+[tool.bandit]
+exclude_dirs = ["tests", "*/tests/*"]
+skips = ["B101", "B601"]  # 跳过测试中的assert和shell注入检查
+
+# 项目特定配置
+[tool.network-security-platform]
+# 默认配置
+default_scan_timeout = 3.0
+default_ping_count = 4
+default_max_concurrent = 100
+
+# 日志配置
+[tool.network-security-platform.logging]
+level = "INFO"
+format = "json"
+output_dir = "logs"
+
+# 数据库配置
+[tool.network-security-platform.database]
+default_url = "sqlite:///./data/app.db"
+test_url = "sqlite:///./data/test.db"
+
+# Redis配置
+[tool.network-security-platform.redis]
+default_url = "redis://localhost:6379/0"
+
+# API配置
+[tool.network-security-platform.api]
+host = "0.0.0.0"
+port = 8000
+reload = false
+workers = 1 

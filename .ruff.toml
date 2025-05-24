@@ -1,0 +1,301 @@
+# Ruff代码格式化和检查配置
+# 项目: 网络安全工具平台
+# 更新时间: 2025-05-23
+
+# 基础设置
+target-version = "py311"
+line-length = 88
+indent-width = 4
+
+# 文件包含和排除设置
+extend-exclude = [
+    ".bzr",
+    ".direnv", 
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "migrations",
+    "alembic/versions",
+]
+
+# 规则选择
+select = [
+    # Pyflakes
+    "F",
+    # pycodestyle
+    "E",
+    "W", 
+    # isort
+    "I",
+    # pydocstyle
+    "D",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # flake8-unused-arguments
+    "ARG",
+    # flake8-use-pathlib
+    "PTH",
+    # Perflint
+    "PERF",
+    # Ruff-specific rules
+    "RUF",
+    # flake8-annotations
+    "ANN",
+    # flake8-async
+    "ASYNC",
+    # flake8-bandit
+    "S",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-errmsg
+    "EM",
+    # flake8-implicit-str-concat
+    "ISC",
+    # flake8-logging-format
+    "G",
+    # flake8-pie
+    "PIE",
+    # flake8-print
+    "T20",
+    # flake8-pytest-style
+    "PT",
+    # flake8-quotes
+    "Q",
+    # flake8-return
+    "RET",
+    # flake8-self
+    "SLF",
+    # flake8-slots
+    "SLOT",
+    # flake8-tidy-imports
+    "TID",
+    # flake8-type-checking
+    "TCH",
+    # tryceratops
+    "TRY",
+    # eradicate
+    "ERA",
+    # pandas-vet
+    "PD",
+    # pygrep-hooks
+    "PGH",
+    # Pylint
+    "PL",
+    # flake8-raise
+    "RSE",
+]
+
+# 忽略的规则
+ignore = [
+    # 文档字符串相关 - 在开发阶段适当放宽
+    "D100",  # Missing docstring in public module
+    "D101",  # Missing docstring in public class
+    "D102",  # Missing docstring in public method
+    "D103",  # Missing docstring in public function
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in __init__
+    "D203",  # 1 blank line required before class docstring
+    "D213",  # Multi-line docstring summary should start at the second line
+    
+    # 类型注解 - 逐步完善
+    "ANN001", # Missing type annotation for function argument
+    "ANN002", # Missing type annotation for *args
+    "ANN003", # Missing type annotation for **kwargs
+    "ANN101", # Missing type annotation for self in method
+    "ANN102", # Missing type annotation for cls in classmethod
+    "ANN201", # Missing return type annotation for public function
+    "ANN202", # Missing return type annotation for private function
+    "ANN204", # Missing return type annotation for special method
+    "ANN206", # Missing return type annotation for classmethod
+    
+    # 安全检查 - 在开发环境中适当放宽
+    "S101",   # Use of assert detected
+    "S104",   # Possible binding to all interfaces
+    "S311",   # Standard pseudo-random generators are not suitable for security/cryptographic purposes
+    
+    # 代码复杂度 - 暂时放宽
+    "PLR0913", # Too many arguments to function call
+    "PLR0915", # Too many statements
+    "PLR2004", # Magic value used in comparison
+    
+    # 其他
+    "E501",   # Line too long (handled by formatter)
+    "ISC001", # Single line implicit string concatenation (conflicts with formatter)
+    "COM812", # Trailing comma missing (handled by formatter)
+]
+
+# 每个文件允许的未使用变量数量
+unfixable = [
+    "F401",   # Unused imports
+    "F841",   # Unused variables
+]
+
+# 文件特定配置
+[per-file-ignores]
+# 测试文件中允许的规则放宽
+"tests/**/*.py" = [
+    "S101",    # assert allowed in tests
+    "D",       # no docstrings required in tests  
+    "ANN",     # no type annotations required in tests
+    "PLR2004", # magic numbers OK in tests
+    "SLF001",  # private member access OK in tests
+]
+
+# 初始化文件
+"**/__init__.py" = [
+    "F401",    # unused import OK in __init__.py
+    "D104",    # no docstring required in __init__.py
+]
+
+# 配置文件
+"**/config.py" = [
+    "PLR0913", # many arguments OK in config
+]
+
+# 迁移文件
+"**/migrations/**/*.py" = [
+    "D",       # no docstrings in migrations
+    "ANN",     # no annotations in migrations
+]
+
+# Alembic文件
+"**/alembic/**/*.py" = [
+    "D",       # no docstrings in alembic
+    "ANN",     # no annotations in alembic
+]
+
+# CLI工具
+"cli_tools/**/*.py" = [
+    "T20",     # print statements OK in CLI tools
+]
+
+# 格式化设置
+[format]
+# 使用双引号
+quote-style = "double"
+
+# 缩进样式
+indent-style = "space"
+
+# 跳过魔术尾随逗号
+skip-magic-trailing-comma = false
+
+# 行结束符
+line-ending = "auto"
+
+# 文档字符串代码格式化
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+# Import排序设置
+[isort]
+# 强制单行导入
+force-single-line = false
+
+# 已知的第一方模块
+known-first-party = [
+    "backend",
+    "cli_tools", 
+    "desktop_client",
+]
+
+# 已知的第三方模块
+known-third-party = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "sqlalchemy",
+    "alembic",
+    "redis",
+    "celery",
+    "pytest",
+    "httpx",
+    "click",
+    "rich",
+    "structlog",
+]
+
+# 分组设置
+section-order = [
+    "future",
+    "standard-library", 
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+# 每个组之间的空行数
+lines-after-imports = 2
+lines-between-sections = 1
+
+# Import样式
+split-on-trailing-comma = true
+combine-as-imports = true
+
+# pydocstyle设置 
+[pydocstyle]
+# 使用numpy风格的文档字符串约定
+convention = "google"
+
+# Lint设置
+[lint]
+# 选择要应用修复的规则
+fixable = ["ALL"]
+
+# 不要自动修复的规则
+unfixable = []
+
+# 允许的字符编码
+allowed-confusables = ["'", "'", "–"]
+
+# 虚拟错误代码
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# flake8-quotes设置
+[flake8-quotes]
+inline-quotes = "double"
+multiline-quotes = "double"
+docstring-quotes = "double"
+avoid-escape = true
+
+# flake8-tidy-imports设置
+[flake8-tidy-imports]
+ban-relative-imports = "all"
+
+# flake8-type-checking设置
+[flake8-type-checking]
+strict = false
+
+# mccabe复杂度设置
+[mccabe]
+max-complexity = 10
+
+# pylint设置
+[pylint]
+max-args = 8
+max-branches = 15
+max-returns = 8
+max-statements = 60 

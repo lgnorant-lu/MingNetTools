@@ -1,0 +1,182 @@
+# Pre-commit钩子配置
+# 项目: 网络安全工具平台
+# 更新时间: 2025-05-23
+
+# 配置版本
+repos:
+  # 通用钩子
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # 文件基础检查
+      - id: trailing-whitespace
+        name: 去除行尾空白字符
+        description: 自动移除行尾的空白字符
+      - id: end-of-file-fixer
+        name: 确保文件以换行符结尾
+        description: 确保文件以单个换行符结尾
+      - id: check-yaml
+        name: 检查YAML文件语法
+        description: 验证YAML文件的语法正确性
+      - id: check-toml
+        name: 检查TOML文件语法
+        description: 验证TOML文件的语法正确性
+      - id: check-json
+        name: 检查JSON文件语法
+        description: 验证JSON文件的语法正确性
+      - id: check-merge-conflict
+        name: 检查合并冲突标记
+        description: 检查是否存在合并冲突标记
+      - id: check-added-large-files
+        name: 检查大文件
+        description: 防止提交大于500KB的文件
+        args: ['--maxkb=500']
+      - id: debug-statements
+        name: 检查调试语句
+        description: 检查Python文件中的调试语句
+      - id: check-docstring-first
+        name: 检查文档字符串位置
+        description: 确保文档字符串在函数/类的第一行
+      - id: check-executables-have-shebangs
+        name: 检查可执行文件shebang
+        description: 确保可执行文件有shebang行
+      - id: mixed-line-ending
+        name: 检查混合行结束符
+        description: 确保文件使用一致的行结束符
+
+  # Ruff代码格式化和检查
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6
+    hooks:
+      # 代码检查 
+      - id: ruff
+        name: Ruff代码检查
+        description: 使用Ruff进行代码风格和质量检查
+        args: [--fix, --exit-non-zero-on-fix]
+        types: [python]
+      # 代码格式化
+      - id: ruff-format
+        name: Ruff代码格式化
+        description: 使用Ruff进行代码格式化
+        types: [python]
+
+  # MyPy类型检查
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        name: MyPy类型检查
+        description: 使用MyPy进行静态类型检查
+        additional_dependencies: [
+          types-redis,
+          types-requests,
+          types-PyYAML,
+        ]
+        args: [--config-file=mypy.ini]
+        exclude: ^(tests/|migrations/|alembic/)
+
+  # Bandit安全检查
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        name: Bandit安全检查
+        description: 使用Bandit检查常见的安全问题
+        args: [-c, pyproject.toml]
+        additional_dependencies: ["bandit[toml]"]
+        exclude: ^tests/
+
+  # 依赖安全检查
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.2
+    hooks:
+      - id: python-safety-dependencies-check
+        name: Safety依赖安全检查
+        description: 检查已知安全漏洞的依赖包
+        files: pyproject.toml
+
+  # 密钥和敏感信息检查
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: 检测密钥和敏感信息
+        description: 检测可能泄露的密钥和敏感信息
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package.lock.json
+
+  # 提交信息格式检查
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.0.0
+    hooks:
+      - id: conventional-pre-commit
+        name: 检查提交信息格式
+        description: 确保提交信息符合约定式提交规范
+        stages: [commit-msg]
+
+  # Markdown文档检查
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint-fix
+        name: Markdown格式检查
+        description: 检查和修复Markdown文档格式
+        args: [--config, .markdownlint.yaml]
+
+  # YAML格式化
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.3
+    hooks:
+      - id: prettier
+        name: 格式化YAML和JSON文件
+        description: 使用Prettier格式化YAML和JSON文件
+        types_or: [yaml, json]
+        exclude: ^(package-lock\.json|yarn\.lock)$
+
+  # Docker文件检查
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        name: Docker文件检查
+        description: 使用Hadolint检查Dockerfile最佳实践
+        args: [--config, .hadolint.yaml]
+
+# 全局配置
+default_language_version:
+  python: python3.11
+
+# 钩子执行失败时的行为
+fail_fast: false
+
+# 仓库范围的排除
+exclude: |
+  (?x)^(
+    \.git/|
+    \.venv/|
+    venv/|
+    __pycache__/|
+    \.mypy_cache/|
+    \.ruff_cache/|
+    \.pytest_cache/|
+    build/|
+    dist/|
+    \.eggs/|
+    migrations/|
+    alembic/versions/|
+    node_modules/|
+    frontend/dist/|
+    frontend/build/|
+    logs/|
+    data/
+  )
+
+# CI环境配置
+ci:
+  autofix_commit_msg: "Fix: 自动修复pre-commit钩子发现的问题"
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: 'Chore: 更新pre-commit钩子版本'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false 

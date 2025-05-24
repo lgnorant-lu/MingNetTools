@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ming彩蛋系统测试</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff41;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            margin-bottom: 30px;
+        }
+        
+        .test-area {
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(0, 255, 65, 0.1);
+        }
+        
+        .trigger-btn {
+            background: #0a0a0a;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .trigger-btn:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px #00ff41;
+        }
+        
+        .click-counter {
+            margin: 10px 0;
+            font-size: 12px;
+            color: #ff1493;
+        }
+        
+        .ascii-art {
+            font-size: 14px;
+            line-height: 1.2;
+            white-space: pre;
+            margin: 20px 0;
+            color: #00ff41;
+            text-shadow: 0 0 5px #00ff41;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+        }
+        
+        .pixel-pet {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #00ff41;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: transform 0.2s ease;
+        }
+        
+        .pixel-pet:hover {
+            transform: scale(1.1);
+        }
+        
+        .achievement {
+            background: rgba(255, 20, 147, 0.2);
+            border: 1px solid #ff1493;
+            color: #ff1493;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎁 Ming彩蛋系统测试</h1>
+        
+        <div class="status" id="status">
+            系统就绪，等待测试...
+        </div>
+        
+        <!-- 触发点测试区域 -->
+        <div class="test-area">
+            <h2>📍 触发点测试</h2>
+            
+            <div>
+                <button class="trigger-btn" id="pixelPetBtn">像素宠物测试 (5连击)</button>
+                <div class="click-counter" id="petCounter">点击次数: 0</div>
+            </div>
+            
+            <div>
+                <button class="trigger-btn" id="settingsBtn">设置关于测试 (3连击)</button>
+                <div class="click-counter" id="settingsCounter">点击次数: 0</div>
+            </div>
+            
+            <div>
+                <button class="trigger-btn" id="dashboardBtn">Dashboard双击测试</button>
+                <div class="click-counter" id="dashboardCounter">双击次数: 0</div>
+            </div>
+            
+            <div>
+                <button class="trigger-btn" id="audioBtn">音频测试 (7连击)</button>
+                <div class="click-counter" id="audioCounter">点击次数: 0</div>
+            </div>
+        </div>
+        
+        <!-- 彩蛋显示区域 -->
+        <div class="test-area" id="easterEggDisplay" style="display: none;">
+            <h2>🎭 彩蛋展示</h2>
+            <div class="ascii-art" id="asciiArt"></div>
+            <div id="easterEggMessage"></div>
+        </div>
+        
+        <!-- 成就区域 -->
+        <div class="test-area">
+            <h2>🏆 成就系统</h2>
+            <div id="achievements">
+                <div class="achievement">🎁 神秘礼物发现者 - 未解锁</div>
+                <div class="achievement">👀 好奇心重 - 未解锁</div>
+                <div class="achievement">🐱 动画收集家 - 未解锁</div>
+                <div class="achievement">💎 Ming的挚友 - 未解锁</div>
+                <div class="achievement">⏰ 时间魔法师 - 未解锁</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 像素宠物 -->
+    <div class="pixel-pet" id="pixelPet">🐱</div>
+    
+    <script>
+        // 彩蛋数据
+        let triggerCounts = {
+            pixelPet: 0,
+            settings: 0,
+            dashboard: 0,
+            audio: 0
+        };
+        
+        let totalTriggers = 0;
+        let achievements = new Set();
+        
+        // ASCII艺术库
+        const asciiArts = {
+            escape: `
+    ┌─────────┐
+    │  🎁📦   │  ← 神秘礼盒
+    │   ╱ ╲   │
+    │  🐱💨  │  ← 小猫咪逃脱冒险！
+    │ ╱     ╲ │
+    └─────────┘`,
+            return: `
+    ┌─────────┐
+    │  🏠🎁   │  ← 温馨的家
+    │   ╱ ╲   │
+    │  🐱❤️  │  ← 小猫咪回家了
+    │ ╱     ╲ │
+    └─────────┘`,
+            direct: `
+    ┌─────────┐
+    │    📦   │  
+    │  ╱   ╲  │  ← 害羞的礼盒
+    │ 🐱😊   │  ← 小猫咪探头
+    │╱       ╲│
+    └─────────┘`
+        };
+        
+        const descriptions = {
+            escape: "🚀 小猫咪开始了一场精彩的逃脱冒险！",
+            return: "🏠 小猫咪找到了回家的路，心中满怀温暖",
+            direct: "😊 害羞的小猫咪悄悄探出了小脑袋"
+        };
+        
+        // 更新状态
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.background = type === 'success' ? 'rgba(0, 255, 65, 0.2)' : 
+                                     type === 'warning' ? 'rgba(255, 255, 0, 0.2)' : 
+                                     'rgba(0, 212, 255, 0.1)';
+        }
+        
+        // 显示彩蛋
+        function showEasterEgg(type) {
+            const display = document.getElementById('easterEggDisplay');
+            const asciiArt = document.getElementById('asciiArt');
+            const message = document.getElementById('easterEggMessage');
+            
+            asciiArt.textContent = asciiArts[type];
+            message.textContent = descriptions[type];
+            display.style.display = 'block';
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                display.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 解锁成就
+        function unlockAchievement(id, name) {
+            if (!achievements.has(id)) {
+                achievements.add(id);
+                updateStatus(`🏆 成就解锁: ${name}`, 'success');
+                
+                // 更新成就显示
+                const achievementElements = document.querySelectorAll('.achievement');
+                achievementElements.forEach(el => {
+                    if (el.textContent.includes(name.split(' ')[1])) {
+                        el.style.background = 'rgba(0, 255, 65, 0.2)';
+                        el.textContent = el.textContent.replace('未解锁', '已解锁');
+                    }
+                });
+            }
+        }
+        
+        // 触发彩蛋逻辑
+        function attemptTrigger(type, requiredCount, probability) {
+            const now = Date.now();
+            const hour = new Date().getHours();
+            
+            // 时间增强概率
+            let finalProbability = probability;
+            if (hour === 12 || hour === 23 || hour === 0) {
+                finalProbability *= 2;
+            }
+            
+            if (triggerCounts[type] % requiredCount === 0 && Math.random() < finalProbability) {
+                // 触发成功
+                totalTriggers++;
+                
+                // 选择动画类型
+                let animationType;
+                if (hour >= 22 || hour <= 6) {
+                    animationType = 'escape';
+                } else if (hour >= 18) {
+                    animationType = 'return';
+                } else {
+                    animationType = 'direct';
+                }
+                
+                showEasterEgg(animationType);
+                updateStatus('🎁 Ming彩蛋触发成功！', 'success');
+                
+                // 检查成就
+                if (totalTriggers === 1) {
+                    unlockAchievement('first', '神秘礼物发现者');
+                }
+                if (totalTriggers === 3) {
+                    unlockAchievement('curious', '好奇心重');
+                }
+                if (totalTriggers >= 10) {
+                    unlockAchievement('friend', 'Ming的挚友');
+                }
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // 事件监听器
+        document.getElementById('pixelPetBtn').addEventListener('click', function() {
+            triggerCounts.pixelPet++;
+            document.getElementById('petCounter').textContent = `点击次数: ${triggerCounts.pixelPet}`;
+            
+            if (attemptTrigger('pixelPet', 5, 0.3)) {
+                triggerCounts.pixelPet = 0;
+                document.getElementById('petCounter').textContent = `点击次数: 0`;
+            }
+        });
+        
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            triggerCounts.settings++;
+            document.getElementById('settingsCounter').textContent = `点击次数: ${triggerCounts.settings}`;
+            
+            if (attemptTrigger('settings', 3, 0.25)) {
+                triggerCounts.settings = 0;
+                document.getElementById('settingsCounter').textContent = `点击次数: 0`;
+            }
+        });
+        
+        document.getElementById('dashboardBtn').addEventListener('dblclick', function() {
+            triggerCounts.dashboard++;
+            document.getElementById('dashboardCounter').textContent = `双击次数: ${triggerCounts.dashboard}`;
+            
+            if (attemptTrigger('dashboard', 1, 0.2)) {
+                // 双击立即尝试触发
+            }
+        });
+        
+        document.getElementById('audioBtn').addEventListener('click', function() {
+            triggerCounts.audio++;
+            document.getElementById('audioCounter').textContent = `点击次数: ${triggerCounts.audio}`;
+            
+            if (attemptTrigger('audio', 7, 0.15)) {
+                triggerCounts.audio = 0;
+                document.getElementById('audioCounter').textContent = `点击次数: 0`;
+            }
+        });
+        
+        // 像素宠物点击
+        document.getElementById('pixelPet').addEventListener('click', function() {
+            triggerCounts.pixelPet++;
+            
+            if (attemptTrigger('pixelPet', 5, 0.3)) {
+                this.style.animation = 'bounce 0.5s ease';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 500);
+                
+                triggerCounts.pixelPet = 0;
+            }
+        });
+        
+        // 初始化
+        updateStatus('🎮 Ming彩蛋系统已启动，开始探索吧！');
+        
+        // 控制台彩蛋
+        console.log(`
+🎯 Ming的彩蛋系统已启动！
+🎁 尝试多次点击页面上的元素来发现惊喜
+🏆 解锁成就获得特殊奖励
+✨ Created with love by Ming (鹿鸣)
+        `);
+        
+        // 全局调试函数
+        window.mingTest = {
+            stats: () => ({
+                triggerCounts,
+                totalTriggers,
+                achievements: Array.from(achievements)
+            }),
+            reset: () => {
+                triggerCounts = { pixelPet: 0, settings: 0, dashboard: 0, audio: 0 };
+                totalTriggers = 0;
+                achievements.clear();
+                updateStatus('🔄 系统已重置');
+            }
+        };
+    </script>
+</body>
+</html> 
