@@ -34,8 +34,8 @@
 
 1. **克隆项目**
    ```bash
-   git clone https://github.com/ignorant-lu/network-security-platform.git
-   cd network-security-platform
+   git clone https://github.com/lgnorant-lu/MingNetTools.git
+   cd MingNetTools
    ```
 
 2. **安装依赖管理工具**
@@ -79,7 +79,7 @@
 ## 📁 项目结构
 
 ```
-network-security-platform/
+MingNetTools/
 ├── backend/          # FastAPI后端服务
 ├── frontend/         # Vue.js前端应用
 ├── desktop_client/   # PySide6桌面客户端
