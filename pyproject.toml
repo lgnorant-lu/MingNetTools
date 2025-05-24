@@ -1,9 +1,9 @@
 [project]
-name = "network-security-platform"
+name = "MingNetTools"
 version = "0.1.0"
 description = "网络安全工具平台 - 集成端口扫描、PING监控、TCP通信的多端网络安全解决方案"
 authors = [
-    {name = "Ignorant-lu", email = "ignorant-lu@example.com"}
+    {name = "Ignorant-lu", email = "lgnorantlu@google.com"}
 ]
 readme = "README.md"
 license = {text = "MIT"}
@@ -110,16 +110,16 @@ production = [
 
 # 完整安装 - 包含所有可选依赖
 all = [
-    "network-security-platform[dev,lint,docs,desktop,network,monitoring,production]"
+    "MingNetTools[dev,lint,docs,desktop,network,monitoring,production]"
 ]
 
 # 项目URL链接
 [project.urls]
-Homepage = "https://github.com/ignorant-lu/network-security-platform"
-Repository = "https://github.com/ignorant-lu/network-security-platform.git"
-Documentation = "https://ignorant-lu.github.io/network-security-platform"
-Issues = "https://github.com/ignorant-lu/network-security-platform/issues"
-Changelog = "https://github.com/ignorant-lu/network-security-platform/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/lgnorant-lu/MingNetTools"
+Repository = "https://github.com/lgnorant-lu/MingNetTools.git"
+Documentation = "https://lgnorant-lu.github.io/MingNetTools"
+Issues = "https://github.com/lgnorant-lu/MingNetTools/issues"
+Changelog = "https://github.com/lgnorant-lu/MingNetTools/blob/main/CHANGELOG.md"
 
 # 命令行入口点
 [project.scripts]
@@ -162,7 +162,7 @@ exclude = [
 [tool.uv]
 # 开发环境配置
 dev-dependencies = [
-    "network-security-platform[dev,lint,docs]"
+    "MingNetTools[dev,lint,docs]"
 ]
 
 # Python下载配置
@@ -249,29 +249,29 @@ exclude_dirs = ["tests", "*/tests/*"]
 skips = ["B101", "B601"]  # 跳过测试中的assert和shell注入检查
 
 # 项目特定配置
-[tool.network-security-platform]
+[tool.MingNetTools]
 # 默认配置
 default_scan_timeout = 3.0
 default_ping_count = 4
 default_max_concurrent = 100
 
 # 日志配置
-[tool.network-security-platform.logging]
+[tool.MingNetTools.logging]
 level = "INFO"
 format = "json"
 output_dir = "logs"
 
 # 数据库配置
-[tool.network-security-platform.database]
+[tool.MingNetTools.database]
 default_url = "sqlite:///./data/app.db"
 test_url = "sqlite:///./data/test.db"
 
 # Redis配置
-[tool.network-security-platform.redis]
+[tool.MingNetTools.redis]
 default_url = "redis://localhost:6379/0"
 
 # API配置
-[tool.network-security-platform.api]
+[tool.MingNetTools.api]
 host = "0.0.0.0"
 port = 8000
 reload = false
