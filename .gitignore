@@ -1,3 +1,7 @@
+# Ignore root-level Markdown files, except README.md
+/*.md
+!/README.md
+
 # Git忽略文件配置
 # 项目: 网络安全工具平台
 # 更新时间: 2025-05-23
