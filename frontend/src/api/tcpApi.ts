@@ -56,43 +56,43 @@ export interface TcpServerStatus {
 export class TcpServerApi {
   // 创建TCP服务器
   static async createServer(config: TcpServerConfig) {
-    const response = await apiClient.post('/api/v1/tcp/server/create', config)
+    const response = await apiClient.post('/tcp/server/create', config)
     return response.data
   }
 
   // 启动服务器
   static async startServer(serverId: string) {
-    const response = await apiClient.post(`/api/v1/tcp/server/${serverId}/start`)
+    const response = await apiClient.post(`/tcp/server/${serverId}/start`)
     return response.data
   }
 
   // 停止服务器
   static async stopServer(serverId: string) {
-    const response = await apiClient.post(`/api/v1/tcp/server/${serverId}/stop`)
+    const response = await apiClient.post(`/tcp/server/${serverId}/stop`)
     return response.data
   }
 
   // 获取服务器状态
   static async getServerStatus(serverId: string): Promise<TcpServerStatus> {
-    const response = await apiClient.get(`/api/v1/tcp/server/${serverId}/status`)
+    const response = await apiClient.get(`/tcp/server/${serverId}/status`)
     return response.data
   }
 
   // 获取所有服务器
   static async getServers() {
-    const response = await apiClient.get('/api/v1/tcp/servers')
+    const response = await apiClient.get('/tcp/servers')
     return response.data
   }
 
   // 获取服务器连接列表
   static async getConnections(serverId: string): Promise<TcpConnection[]> {
-    const response = await apiClient.get(`/api/v1/tcp/server/${serverId}/connections`)
+    const response = await apiClient.get(`/tcp/server/${serverId}/connections`)
     return response.data
   }
 
   // 向指定连接发送消息
   static async sendToConnection(serverId: string, connectionId: string, message: string) {
-    const response = await apiClient.post(`/api/v1/tcp/server/${serverId}/send/${connectionId}`, {
+    const response = await apiClient.post(`/tcp/server/${serverId}/send/${connectionId}`, {
       message
     })
     return response.data
@@ -100,7 +100,7 @@ export class TcpServerApi {
 
   // 广播消息
   static async broadcast(serverId: string, message: string) {
-    const response = await apiClient.post(`/api/v1/tcp/server/${serverId}/broadcast`, {
+    const response = await apiClient.post(`/tcp/server/${serverId}/broadcast`, {
       message
     })
     return response.data
@@ -111,25 +111,25 @@ export class TcpServerApi {
 export class TcpClientApi {
   // 创建TCP客户端
   static async createClient(config: TcpClientConfig) {
-    const response = await apiClient.post('/api/v1/tcp/client/create', config)
+    const response = await apiClient.post('/tcp/client/create', config)
     return response.data
   }
 
   // 连接到服务器
   static async connect(clientId: string) {
-    const response = await apiClient.post(`/api/v1/tcp/client/${clientId}/connect`)
+    const response = await apiClient.post(`/tcp/client/${clientId}/connect`)
     return response.data
   }
 
   // 断开连接
   static async disconnect(clientId: string) {
-    const response = await apiClient.post(`/api/v1/tcp/client/${clientId}/disconnect`)
+    const response = await apiClient.post(`/tcp/client/${clientId}/disconnect`)
     return response.data
   }
 
   // 发送消息
   static async sendMessage(clientId: string, message: string) {
-    const response = await apiClient.post(`/api/v1/tcp/client/${clientId}/send`, {
+    const response = await apiClient.post(`/tcp/client/${clientId}/send`, {
       message
     })
     return response.data
@@ -137,13 +137,13 @@ export class TcpClientApi {
 
   // 获取客户端状态
   static async getClientStatus(clientId: string) {
-    const response = await apiClient.get(`/api/v1/tcp/client/${clientId}/status`)
+    const response = await apiClient.get(`/tcp/client/${clientId}/status`)
     return response.data
   }
 
   // 获取所有客户端
   static async getClients() {
-    const response = await apiClient.get('/api/v1/tcp/clients')
+    const response = await apiClient.get('/tcp/clients')
     return response.data
   }
 } 

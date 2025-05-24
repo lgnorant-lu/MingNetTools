@@ -50,7 +50,7 @@ export interface ScanWebSocketParams {
 export class ScanApi {
   // 开始扫描
   static async startScan(config: ScanConfig) {
-    const response = await apiClient.post('/api/v1/scan/start', config, {
+    const response = await apiClient.post('/scan/start', config, {
       timeout: 30000 // 🔧 修复：扫描启动需要更长时间，设置30秒超时
     })
     return response.data
@@ -58,13 +58,13 @@ export class ScanApi {
 
   // 获取扫描状态
   static async getScanStatus(scanId: string): Promise<ScanStatus> {
-    const response = await apiClient.get(`/api/v1/scan/status/${scanId}`)
+    const response = await apiClient.get(`/scan/status/${scanId}`)
     return response.data
   }
 
   // 获取扫描结果
   static async getScanResults(scanId: string): Promise<ScanResult[]> {
-    const response = await apiClient.get(`/api/v1/scan/results/${scanId}`)
+    const response = await apiClient.get(`/scan/results/${scanId}`)
     return response.data
   }
 
@@ -77,31 +77,31 @@ export class ScanApi {
         data: { scan_id: scanId }
       });
     }
-    const response = await apiClient.post(`/api/v1/scan/stop/${scanId}`);
+    const response = await apiClient.post(`/scan/stop/${scanId}`);
     return response.data;
   }
 
   // 获取扫描历史
   static async getScanHistory() {
-    const response = await apiClient.get('/api/v1/scan/history')
+    const response = await apiClient.get('/scan/history')
     return response.data
   }
 
   // 删除扫描记录
   static async deleteScan(scanId: string) {
-    const response = await apiClient.delete(`/api/v1/scan/${scanId}`)
+    const response = await apiClient.delete(`/scan/${scanId}`)
     return response.data
   }
 
   // 获取扫描统计信息
   static async getScanStats() {
-    const response = await apiClient.get('/api/v1/scan/stats')
+    const response = await apiClient.get('/scan/stats')
     return response.data
   }
 
   // 导出扫描结果
   static async exportResults(scanId: string, format: 'json' | 'csv' | 'xml' = 'json') {
-    const response = await apiClient.get(`/api/v1/scan/export/${scanId}`, {
+    const response = await apiClient.get(`/scan/export/${scanId}`, {
       params: { format },
       responseType: 'blob'
     })
@@ -119,7 +119,7 @@ export class ScanWebSocket {
 
   constructor(params: ScanWebSocketParams) {
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const wsHost = import.meta.env.VITE_WS_HOST || 'localhost:8000'
+    const wsHost = window.location.host
     
     // 构建完整 URL，确保使用正确路径
     let url = `${wsProtocol}//${wsHost}/api/v1/ws/scan`

@@ -557,7 +557,7 @@ class PingEngine:
                 ttl_pattern = r'TTL=(\d+)'
             else:
                 # Linux/macOS: ping -c 1 -W 1000 host  
-                cmd = ["ping", "-c", "1", "-W", str(int(self.timeout * 1000)), ip_address]
+                cmd = ["/usr/bin/ping", "-c", "1", "-W", str(int(self.timeout * 1000)), ip_address]
                 time_pattern = r'time=(\d+\.?\d*)'
                 ttl_pattern = r'ttl=(\d+)'
             

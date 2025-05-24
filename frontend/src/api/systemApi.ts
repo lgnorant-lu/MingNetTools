@@ -41,25 +41,25 @@ export class SystemApi {
 
   // 获取系统状态
   static async getSystemStatus(): Promise<SystemStatus> {
-    const response = await apiClient.get('/api/v1/system/status')
+    const response = await apiClient.get('/system/status')
     return response.data
   }
 
   // 获取服务状态
   static async getServiceStatus(): Promise<ServiceStatus[]> {
-    const response = await apiClient.get('/api/v1/system/services')
+    const response = await apiClient.get('/system/services')
     return response.data
   }
 
   // 获取性能统计
   static async getPerformanceStats(): Promise<PerformanceStats> {
-    const response = await apiClient.get('/api/v1/system/performance')
+    const response = await apiClient.get('/system/performance')
     return response.data
   }
 
   // 获取系统信息
   static async getSystemInfo() {
-    const response = await apiClient.get('/api/v1/system/info')
+    const response = await apiClient.get('/system/info')
     return response.data
   }
 } 

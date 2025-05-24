@@ -55,56 +55,56 @@ export interface PingWebSocketParams {
 export class PingApi {
   // 开始PING测试
   static async startPing(config: PingConfig) {
-    const response = await apiClient.post('/api/v1/ping/start', config)
+    const response = await apiClient.post('/ping/start', config)
     return response.data
   }
 
   // 停止PING测试
   static async stopPing(pingId: string) {
-    const response = await apiClient.post(`/api/v1/ping/stop/${pingId}`)
+    const response = await apiClient.post(`/ping/stop/${pingId}`)
     return response.data
   }
 
   // 获取PING统计信息
   static async getPingStats(pingId: string): Promise<PingStatistics> {
-    const response = await apiClient.get(`/api/v1/ping/stats/${pingId}`)
+    const response = await apiClient.get(`/ping/stats/${pingId}`)
     return response.data
   }
 
   // 获取PING结果
   static async getPingResults(pingId: string, limit?: number): Promise<PingResult[]> {
     const params = limit ? { limit } : {}
-    const response = await apiClient.get(`/api/v1/ping/results/${pingId}`, { params })
+    const response = await apiClient.get(`/ping/results/${pingId}`, { params })
     return response.data
   }
 
   // 获取PING历史
   static async getPingHistory() {
-    const response = await apiClient.get('/api/v1/ping/history')
+    const response = await apiClient.get('/ping/history')
     return response.data
   }
 
   // 删除PING记录
   static async deletePing(pingId: string) {
-    const response = await apiClient.delete(`/api/v1/ping/${pingId}`)
+    const response = await apiClient.delete(`/ping/${pingId}`)
     return response.data
   }
 
   // 单次PING测试
   static async singlePing(target: string, timeout: number = 3) {
-    const response = await apiClient.post('/api/v1/ping/single', { target, timeout })
+    const response = await apiClient.post('/ping/single', { target, timeout })
     return response.data
   }
 
   // 批量PING测试
   static async batchPing(targets: string[], timeout: number = 3) {
-    const response = await apiClient.post('/api/v1/ping/batch', { targets, timeout })
+    const response = await apiClient.post('/ping/batch', { targets, timeout })
     return response.data
   }
 
   // 网络延迟监控
   static async getNetworkLatency(target: string, hours: number = 24): Promise<NetworkLatency[]> {
-    const response = await apiClient.get('/api/v1/ping/latency', {
+    const response = await apiClient.get('/ping/latency', {
       params: { target, hours }
     })
     return response.data
@@ -112,7 +112,7 @@ export class PingApi {
 
   // 网络质量评估
   static async getNetworkQuality(target: string) {
-    const response = await apiClient.get('/api/v1/ping/quality', {
+    const response = await apiClient.get('/ping/quality', {
       params: { target }
     })
     return response.data
@@ -120,7 +120,7 @@ export class PingApi {
 
   // 导出PING结果
   static async exportResults(pingId: string, format: 'json' | 'csv' = 'json') {
-    const response = await apiClient.get(`/api/v1/ping/export/${pingId}`, {
+    const response = await apiClient.get(`/ping/export/${pingId}`, {
       params: { format },
       responseType: 'blob'
     })
@@ -139,7 +139,7 @@ export class PingWebSocket {
 
   constructor(params: PingWebSocketParams) {
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const wsHost = import.meta.env.VITE_WS_HOST || 'localhost:8000'
+    const wsHost = window.location.host
     let url = `${wsProtocol}//${wsHost}/api/v1/ws/ping`
     
     // 添加查询参数

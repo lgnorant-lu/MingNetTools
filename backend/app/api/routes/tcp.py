@@ -47,6 +47,25 @@ async def start_tcp_server(config: TCPServerConfig, background_tasks: Background
         SuccessResponse: 服务器信息
     """
     try:
+        # 检查是否已有服务器在运行
+        if _tcp_servers:
+            existing_server_id = list(_tcp_servers.keys())[0]
+            existing_server = _tcp_servers[existing_server_id]
+            actual_port = existing_server.actual_port or existing_server.port
+            server_info = {
+                "server_id": existing_server_id,
+                "host": existing_server.host,
+                "port": actual_port,
+                "status": "running",
+                "start_time": getattr(existing_server.statistics, 'start_time', None),
+                "max_connections": existing_server.max_connections,
+                "current_connections": len(existing_server.clients),
+            }
+            return SuccessResponse(
+                message="TCP服务器已在运行",
+                data=server_info
+            )
+        
         server_id = str(uuid.uuid4())
         
         # 创建真实的TCP服务器实例
@@ -75,7 +94,7 @@ async def start_tcp_server(config: TCPServerConfig, background_tasks: Background
             "start_time": time.time(),
             "max_connections": config.max_connections,
             "current_connections": len(tcp_server.clients),
-            "ssl_enabled": config.ssl_enabled
+            "ssl_enabled": getattr(config, 'ssl_enabled', False) # Use getattr for ssl_enabled from config
         }
         
         return SuccessResponse(
